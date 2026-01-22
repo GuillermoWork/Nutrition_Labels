@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canadian Linear Nutrition Facts Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .container {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .input-section {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .output-section {
+            flex: 1;
+            min-width: 400px;
+        }
+        
+        .form-group {
+            margin-bottom: 10px;
+        }
+        
+        label {
+            display: inline-block;
+            width: 150px;
+            font-weight: bold;
+        }
+        
+        input {
+            width: 150px;
+            padding: 5px;
+        }
+        
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        #saveBtn {
+            background-color: #2196F3;
+        }
+        
+        #saveBtn:hover {
+            background-color: #0b7dda;
+        }
+        
+        .nutrition-label {
+            border: 2px solid black;
+            padding: 8px;
+            font-family: Helvetica, Arial, sans-serif;
+            display: inline-block;
+            line-height: 1.4;
+            background-color: white;
+        }
+        
+        .nutrition-label strong {
+            font-weight: bold;
+        }
+        
+        .line1 {
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+        
+        .line2, .line3, .line4 {
+            font-size: 11px;
+            margin-bottom: 2px;
+        }
+        
+        .line5 {
+            font-size: 9px;
+            margin-top: 2px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        h2 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Canadian Linear Nutrition Facts Label Generator</h1>
+    
+    <div class="container">
+        <div class="input-section">
+            <h2>Enter Nutrition Information</h2>
+            <form id="nutritionForm">
+                <div class="form-group">
+                    <label for="servingSize">Serving Size:</label>
+                    <input type="text" id="servingSize" value="1 bag (15g)">
+                </div>
+                <div class="form-group">
+                    <label for="calories">Calories:</label>
+                    <input type="number" id="calories" value="50" step="1">
+                </div>
+                <div class="form-group">
+                    <label for="fat">Total Fat (g):</label>
+                    <input type="number" id="fat" value="0" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label for="saturatedFat">Saturated Fat (g):</label>
+                    <input type="number" id="saturatedFat" value="0" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label for="transFat">Trans Fat (g):</label>
+                    <input type="number" id="transFat" value="0" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label for="cholesterol">Cholesterol (mg):</label>
+                    <input type="number" id="cholesterol" value="0" step="1">
+                </div>
+                <div class="form-group">
+                    <label for="sodium">Sodium (mg):</label>
+                    <input type="number" id="sodium" value="0" step="1">
+                </div>
+                <div class="form-group">
+                    <label for="carbohydrate">Carbohydrate (g):</label>
+                    <input type="number" id="carbohydrate" value="14" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label for="fiber">Dietary Fiber (g):</label>
+                    <input type="number" id="fiber" value="3" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label for="sugars">Total Sugars (g):</label>
+                    <input type="number" id="sugars" value="10" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label for="protein">Protein (g):</label>
+                    <input type="number" id="protein" value="0" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label for="potassium">Potassium (mg):</label>
+                    <input type="number" id="potassium" value="109" step="1">
+                </div>
+                <div class="form-group">
+                    <label for="vitaminD">Vitamin D (mcg):</label>
+                    <input type="number" id="vitaminD" value="0" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label for="calcium">Calcium (mg):</label>
+                    <input type="number" id="calcium" value="0" step="1">
+                </div>
+                <div class="form-group">
+                    <label for="iron">Iron (mg):</label>
+                    <input type="number" id="iron" value="0" step="0.1">
+                </div>
+                <button type="button" onclick="generateLabel()">Generate Label</button>
+                <button type="button" id="saveBtn" onclick="saveLabelAsPNG()">Save as PNG</button>
+            </form>
+        </div>
+        
+        <div class="output-section">
+            <h2>Nutrition Facts Label</h2>
+            <div id="labelOutput"></div>
+        </div>
+    </div>
+
+    <script>
+        const dailyValues = {
+            fat: 78,
+            saturatedFat: 20,
+            transFat: 20,
+            cholesterol: 300,
+            sodium: 2300,
+            potassium: 4700,
+            carbohydrate: 275,
+            fiber: 28,
+            sugars: 50,
+            protein: 50,
+            vitaminD: 20,
+            calcium: 1300,
+            iron: 18
+        };
+
+        function calculateDV(nutrient, amount) {
+            if (amount === 0 || !dailyValues[nutrient]) return null;
+            return Math.round((amount / dailyValues[nutrient]) * 100);
+        }
+
+        function formatNutrient(name, amount, unit, dv = null) {
+            let text = `<strong>${name} ${amount}${unit}</strong>`;
+            if (dv !== null) {
+                text += ` <strong>(${dv}% DV)</strong>`;
+            }
+            return text;
+        }
+
+        function generateLabel() {
+            const data = {
+                servingSize: document.getElementById('servingSize').value,
+                calories: parseFloat(document.getElementById('calories').value) || 0,
+                fat: parseFloat(document.getElementById('fat').value) || 0,
+                saturatedFat: parseFloat(document.getElementById('saturatedFat').value) || 0,
+                transFat: parseFloat(document.getElementById('transFat').value) || 0,
+                cholesterol: parseFloat(document.getElementById('cholesterol').value) || 0,
+                sodium: parseFloat(document.getElementById('sodium').value) || 0,
+                carbohydrate: parseFloat(document.getElementById('carbohydrate').value) || 0,
+                fiber: parseFloat(document.getElementById('fiber').value) || 0,
+                sugars: parseFloat(document.getElementById('sugars').value) || 0,
+                protein: parseFloat(document.getElementById('protein').value) || 0,
+                potassium: parseFloat(document.getElementById('potassium').value) || 0,
+                vitaminD: parseFloat(document.getElementById('vitaminD').value) || 0,
+                calcium: parseFloat(document.getElementById('calcium').value) || 0,
+                iron: parseFloat(document.getElementById('iron').value) || 0
+            };
+
+            // Calculate %DV values
+            const fatDV = calculateDV('fat', data.fat);
+            const satTransDV = calculateDV('saturatedFat', data.saturatedFat + data.transFat);
+            const sodiumDV = calculateDV('sodium', data.sodium);
+            const carbDV = calculateDV('carbohydrate', data.carbohydrate);
+            const fiberDV = calculateDV('fiber', data.fiber);
+            const sugarsDV = calculateDV('sugars', data.sugars);
+            const potassiumDV = calculateDV('potassium', data.potassium);
+            const vitaminDDV = calculateDV('vitaminD', data.vitaminD);
+            const calciumDV = calculateDV('calcium', data.calcium);
+            const ironDV = calculateDV('iron', data.iron);
+
+            // Line 1
+            let line1 = `<strong>Nutrition Facts</strong> Serving size: ${data.servingSize}, Amount per serving: <strong>Calories ${data.calories}</strong>`;
+
+            // Line 2
+            let line2 = formatNutrient('Total Fat', data.fat, 'g', fatDV) + ', ';
+            line2 += formatNutrient('Saturated', data.saturatedFat, 'g') + ' + ';
+            line2 += formatNutrient('Trans', data.transFat, 'g', satTransDV) + ', ';
+            line2 += formatNutrient('Cholesterol', data.cholesterol, 'mg') + ', ';
+            line2 += formatNutrient('Sodium', data.sodium, 'mg', sodiumDV);
+
+            // Line 3
+            let line3 = formatNutrient('Total Carbohydrate', data.carbohydrate, 'g', carbDV) + ', ';
+            line3 += formatNutrient('Dietary Fiber', data.fiber, 'g', fiberDV) + ', ';
+            line3 += formatNutrient('Total Sugars', data.sugars, 'g') + ', ';
+            line3 += formatNutrient('Protein', data.protein, 'g') + ', ';
+            line3 += formatNutrient('Potassium', data.potassium, 'mg', potassiumDV) + ', ';
+            line3 += formatNutrient('Vitamin D', data.vitaminD, 'mcg', vitaminDDV) + ', ';
+            line3 += formatNutrient('Calcium', data.calcium, 'mg', calciumDV) + ', ';
+            line3 += formatNutrient('Iron', data.iron, 'mg', ironDV) + '.';
+
+            // Line 4
+            let line4 = 'Not a significant source of ';
+            let notSignificant = [];
+            if (data.saturatedFat === 0 && data.transFat === 0) notSignificant.push('saturated fat, trans fat');
+            else if (data.saturatedFat === 0) notSignificant.push('saturated fat');
+            else if (data.transFat === 0) notSignificant.push('trans fat');
+            if (data.cholesterol === 0) notSignificant.push('cholesterol');
+            if (data.sugars === 0) notSignificant.push('added sugars');
+            if (data.vitaminD === 0) notSignificant.push('vitamin D');
+            if (data.calcium === 0) notSignificant.push('calcium');
+            if (data.iron === 0) notSignificant.push('iron');
+            
+            line4 += notSignificant.join(', ') + '.';
+
+            // Line 5
+            let line5Left = '% = % Daily Value.';
+            let line5Right = '* 5% or less is <strong>a little</strong>, 15% or more is <strong>a lot</strong>.';
+
+            const labelHTML = `
+                <div class="nutrition-label" id="nutritionLabel">
+                    <div class="line1">${line1}</div>
+                    <div class="line2">${line2}</div>
+                    <div class="line3">${line3}</div>
+                    <div class="line4">${line4}</div>
+                    <div class="line5">
+                        <span>${line5Left}</span>
+                        <span>${line5Right}</span>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('labelOutput').innerHTML = labelHTML;
+        }
+
+        function saveLabelAsPNG() {
+            const labelElement = document.getElementById('nutritionLabel');
+            
+            if (!labelElement) {
+                alert('Please generate a label first!');
+                return;
+            }
+
+            html2canvas(labelElement, {
+                backgroundColor: '#ffffff',
+                scale: 3, 
+                logging: false
+            }).then(canvas => {
+                canvas.toBlob(blob => {
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.download = 'nutrition-facts-label.png';
+                    link.href = url;
+                    link.click();
+                    
+                    // Clean up
+                    URL.revokeObjectURL(url);
+                });
+            });
+        }
+
+        // Generate initial label on page load
+        window.onload = generateLabel;
+    </script>
+</body>
+</html>
